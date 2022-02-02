@@ -1,7 +1,8 @@
 package camp.kuznetsov.rn.odnoklassniki;
 
+import android.app.Activity;
 import android.content.Intent;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 import android.util.Log;
 
 import com.facebook.react.bridge.ActivityEventListener;
@@ -12,6 +13,7 @@ import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.bridge.WritableMap;
+import com.facebook.react.module.annotations.ReactModule;
 
 import org.json.JSONObject;
 
@@ -20,7 +22,10 @@ import ru.ok.android.sdk.OkListener;
 import ru.ok.android.sdk.Shared;
 import ru.ok.android.sdk.util.OkAuthType;
 
+@ReactModule(name="RNOdnoklassnikiModule")
 public class RNOdnoklassnikiModule extends ReactContextBaseJavaModule implements ActivityEventListener {
+    public static final String NAME = "RNOdnoklassniki";
+
     private static final String LOG = "RNOdnoklassniki";
     private static final String E_LOGIN_ERROR = "E_LOGIN_ERROR";
     private static final String E_GET_USER_FAILED = "E_GET_USER_FAILED";
@@ -29,15 +34,13 @@ public class RNOdnoklassnikiModule extends ReactContextBaseJavaModule implements
     private String redirectUri;
     private Promise loginPromise;
 
-    public RNOdnoklassnikiModule(final ReactApplicationContext reactContext) {
-        super(reactContext);
-        reactContext.addActivityEventListener(this);
-    }
-
     @Override
     public String getName() {
         return "RNOdnoklassniki";
     }
+
+    @Override
+    public void onNewIntent(Intent intent) {}
 
     @ReactMethod
     public void initialize(final String appId, final String appKey) {
@@ -77,7 +80,7 @@ public class RNOdnoklassnikiModule extends ReactContextBaseJavaModule implements
     }
 
     @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+    public void onActivityResult(Activity activity, int requestCode, int resultCode, Intent data) {
         if (Odnoklassniki.getInstance().isActivityRequestOAuth(requestCode)) {
             Odnoklassniki.getInstance().onAuthActivityResult(requestCode, resultCode, data, getAuthListener());
         }
